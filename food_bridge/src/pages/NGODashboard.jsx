@@ -5,15 +5,15 @@ const NGODashboard = () => {
   const [deliveryAddress, setDeliveryAddress] = useState({});
 
   const loadDonations = () => {
-    const stored = JSON.parse(localStorage.getItem("donations")) || [];
-    setDonations(stored);
+    const data = JSON.parse(localStorage.getItem("donations")) || [];
+    setDonations(data);
   };
 
   useEffect(() => {
     loadDonations();
-    const handler = () => loadDonations();
-    window.addEventListener("donationsUpdated", handler);
-    return () => window.removeEventListener("donationsUpdated", handler);
+    window.addEventListener("donationsUpdated", loadDonations);
+    return () =>
+      window.removeEventListener("donationsUpdated", loadDonations);
   }, []);
 
   const requestDonation = (id) => {
@@ -22,8 +22,7 @@ const NGODashboard = () => {
         ? {
             ...d,
             deliveryAddress: deliveryAddress[id],
-            status: "Requested",
-            requestedByNGO: true
+            status: "Requested"
           }
         : d
     );
@@ -34,83 +33,57 @@ const NGODashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-black text-gray-200">
-      {/* Navbar */}
-      <nav className="flex justify-between items-center px-8 py-4 border-b border-zinc-800">
-        <h1 className="text-xl font-bold text-blue-400">
-          Food Bridge | NGO
-        </h1>
-      </nav>
+    <div className="min-h-screen bg-black text-gray-200 p-6">
+      <h1 className="text-2xl font-bold text-blue-400 mb-6">
+        NGO Dashboard
+      </h1>
 
-      {/* Content */}
-      <div className="p-6 max-w-5xl mx-auto">
-        <h2 className="text-2xl font-bold text-green-400 mb-6">
-          Donation Requests
-        </h2>
-
-        {donations.length === 0 && (
-          <p className="text-gray-400 text-center">
-            No donations available
+      {donations.map((d) => (
+        <div key={d.id} className="bg-zinc-900 p-4 mb-4 rounded">
+          <p className="font-bold">{d.food}</p>
+          <p className="text-sm text-gray-400">
+            Qty: {d.quantity}
           </p>
-        )}
+          <p className="text-yellow-400">
+            Pickup: {d.pickupAddress}
+          </p>
 
-        {donations.map((d) => (
-          <div
-            key={d.id}
-            className="bg-zinc-900 p-5 mb-5 rounded-lg"
-          >
-            <p className="text-lg font-semibold">
-               {d.food}
+          {d.status === "Pending" && (
+            <>
+              <input
+                className="w-full mt-3 p-2 bg-zinc-800 rounded"
+                placeholder="Enter delivery address"
+                value={deliveryAddress[d.id] || ""}
+                onChange={(e) =>
+                  setDeliveryAddress({
+                    ...deliveryAddress,
+                    [d.id]: e.target.value
+                  })
+                }
+              />
+
+              <button
+                onClick={() => requestDonation(d.id)}
+                className="mt-3 bg-blue-400 text-black px-4 py-2 rounded"
+              >
+                Request Donation
+              </button>
+            </>
+          )}
+
+          {d.status === "Requested" && (
+            <p className="text-yellow-400 mt-2">
+              ⏳ Waiting for volunteer
             </p>
+          )}
 
-            <p className="text-sm text-gray-400">
-              Qty: {d.quantity}
+          {d.status === "Accepted" && (
+            <p className="text-green-400 mt-2">
+              ✅ Accepted by {d.acceptedBy}
             </p>
-
-            <p className="text-sm text-yellow-400 mt-1">
-              📍 Pickup: {d.pickupAddress}
-            </p>
-
-            {/* PENDING */}
-            {d.status === "Pending" && (
-              <>
-                <input
-                  type="text"
-                  placeholder="Enter delivery address"
-                  className="w-full mt-3 p-2 rounded bg-zinc-800"
-                  onChange={(e) =>
-                    setDeliveryAddress({
-                      ...deliveryAddress,
-                      [d.id]: e.target.value
-                    })
-                  }
-                />
-
-                <button
-                  onClick={() => requestDonation(d.id)}
-                  className="mt-3 bg-blue-400 text-black px-4 py-2 rounded"
-                >
-                  Request Donation
-                </button>
-              </>
-            )}
-
-            {/* REQUESTED */}
-            {d.status === "Requested" && (
-              <p className="mt-3 text-yellow-400 font-semibold">
-                ⏳ Waiting for volunteer acceptance
-              </p>
-            )}
-
-            {/* ACCEPTED */}
-            {d.status === "Accepted" && (
-              <p className="mt-3 text-green-400 font-semibold">
-                ✅ Accepted by {d.acceptedBy}
-              </p>
-            )}
-          </div>
-        ))}
-      </div>
+          )}
+        </div>
+      ))}
     </div>
   );
 };
