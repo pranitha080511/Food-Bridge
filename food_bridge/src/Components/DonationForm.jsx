@@ -5,6 +5,8 @@ const DonationForm = ({ onAddDonation }) => {
   const [quantity, setQuantity] = useState("");
   const [time, setTime] = useState("");
   const [location, setLocation] = useState("");
+  const [coords, setCoords] = useState(null);
+
   const timeRef = useRef(null);
 
   const handleSubmit = (e) => {
@@ -16,12 +18,14 @@ const DonationForm = ({ onAddDonation }) => {
     }
 
     onAddDonation({
-      id: Date.now(),
-      food,
-      quantity,
-      time,
-      location,
-      status: "Pending",
+      id: 123,
+      food: "Rice",
+      quantity: "10kg",
+      pickupAddress: "Hotel ABC",
+      deliveryAddress: "NGO Home",
+      status: "Accepted",
+      requestedByNGO: true,
+      acceptedBy: "Arun (Volunteer)"
     });
 
     // Clear form

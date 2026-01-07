@@ -77,12 +77,6 @@ const LandingPage = () => {
       <nav className="fixed top-0 w-full bg-black/80 backdrop-blur border-b border-zinc-800 z-50">
         <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
           <h1 className="text-2xl font-bold text-yellow-400">Food Bridge</h1>
-          <button
-            onClick={() => navigate("/login")}
-            className="bg-green-400 text-black px-5 py-2 rounded-lg font-semibold"
-          >
-            Login
-          </button>
         </div>
       </nav>
 
@@ -106,14 +100,20 @@ const LandingPage = () => {
                 onClick={() => navigate("/login?role=donator")}
                 className="bg-green-400 text-black px-6 py-3 rounded-xl font-semibold"
               >
-                Donate Food
+                Join as Food Donor
               </button>
 
               <button
                 onClick={() => navigate("/login?role=volunteer")}
                 className="bg-yellow-400 text-black px-6 py-3 rounded-xl font-semibold"
               >
-                Volunteer
+                Join as Volunteer
+              </button>
+              <button
+                onClick={() => navigate("/login?role=ngoorganiation")}
+                className="bg-green-400 text-black px-6 py-3 rounded-xl font-semibold"
+              >
+                Join as NGO Organization
               </button>
             </div>
           </div>

@@ -8,6 +8,7 @@ const Login = () => {
   const handleLogin = () => {
     if (role === "donator") navigate("/donator");
     if (role === "volunteer") navigate("/volunteer");
+    if (role === "ngoorganiation") navigate("/ngoorganization");
   };
 
   return (
